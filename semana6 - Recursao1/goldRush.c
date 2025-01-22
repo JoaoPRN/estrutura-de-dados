@@ -6,10 +6,6 @@ void division(int n, int m, int *resultado){
 
         int pilhaMaior = (n * 2) / 3;
         int pilhaMenor = n / 3;
-        // printf("n: %d\n", n);
-        // printf("m: %d\n", m);
-        // printf("pilhaMaior: %d\n", pilhaMaior);
-        // printf("pilhaMenor: %d\n", pilhaMenor);
 
         if (pilhaMaior + pilhaMenor != n){
             *resultado = 0; // não é possivel
