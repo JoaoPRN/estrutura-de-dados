@@ -47,7 +47,16 @@ void append(Lista* lista, int valor){
 void deleteNode(Lista* lista, int posicao){
 
     Node* no_atual = lista->inicio;
-    Node* no_anterior = (Node*) malloc(sizeof(Node));
+
+    if (posicao == 0){
+
+        Node* no_aux = lista->inicio;
+        lista->inicio = no_atual->proximo;
+        free(no_atual);
+        return;
+    }
+
+    Node* no_anterior = NULL;
 
     for(int i = 0; i < posicao; i++){
 
@@ -55,8 +64,21 @@ void deleteNode(Lista* lista, int posicao){
         no_atual = no_atual->proximo;
     }
 
-    no_anterior->proximo=no_atual->proximo;
+    no_anterior->proximo = no_atual->proximo;
+    free(no_atual);
+}
 
+void freeLista(Lista* lista){
+
+    Node* no_atual = lista->inicio;
+
+    while(no_atual != NULL){
+        lista->inicio = lista->inicio->proximo;
+        free(no_atual);
+        no_atual = lista->inicio;
+    }
+
+    free(lista);
 }
 
 void imprime_lista(Lista* lista){
@@ -85,5 +107,6 @@ int main(){
     scanf("%d", &posicao);
     deleteNode(lista, posicao);
     imprime_lista(lista);
+    freeLista(lista);
     return 0;
 }

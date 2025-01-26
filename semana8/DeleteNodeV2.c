@@ -88,10 +88,13 @@ SinglyLinkedListNode* deleteNode(SinglyLinkedListNode* inicio, int posicao) {
 
     SinglyLinkedListNode* no_atual = inicio;
     SinglyLinkedListNode* no_anterior;
-
+    
+    if (posicao == 0){
+        inicio=no_atual->next;
+    }
+    
     for(int i = 0; i < posicao; i++){
 
-        printf("%d ", no_anterior->data);
         no_anterior = no_atual;
         no_atual = no_atual->next;
     }
@@ -99,7 +102,6 @@ SinglyLinkedListNode* deleteNode(SinglyLinkedListNode* inicio, int posicao) {
     no_anterior->next=no_atual->next;
     return inicio;
 }
-
 int main()
 {
     FILE* fptr = fopen(getenv("OUTPUT_PATH"), "w");
