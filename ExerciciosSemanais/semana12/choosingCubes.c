@@ -57,64 +57,55 @@ void freeLista(Lista* lista){
     free(lista);
 }
 
-void imprime_lista(Lista* lista){
-
-    Node* no_atual = lista->inicio;
-    while(no_atual != NULL){
-
-        printf("%d ", no_atual->valor);
-        no_atual = no_atual->proximo;
-    }
-}
-
 void retornaEstados(Lista* lista, int k, int valorPreferido){
     Node* noK = lista->inicio;
-    for (int i = 0; i < k; i++){
+
+    if (lista->quantidade == k){
+        printf("YES\n");
+        return;
+    }
+
+    for (int i = 1; i < k; i++){
         noK = noK->proximo;
     }
+
     int valork = noK->valor;
+    int valorProximoK = noK->proximo->valor;
 
-    if(valorPreferido < valork){
-        printf("NO");
+    if (valorPreferido > valorProximoK){
+        printf("YES\n");
     }
-
-    if (valorPreferido > valork){
-        printf("YES");
-    }
-
-    if (valorPreferido == valork){
-        printf("MAYBE");
+    else if(valorPreferido < valork){
+        printf("NO\n");
+    } else {
+        printf("MAYBE\n");
     }
 
 }
 
 void ordenar(Lista* lista){
-    if (lista->quantidade >= 2){
+    if (lista->quantidade > 1){
         
-        int contador = -1;
-        int limite = lista->quantidade;
+        int tamanho = lista->quantidade;
 
-        for (int j = 0; j <= limite - contador; j++){
+        for (int j = 0; j <= tamanho - 1; j++){
 
             Node* no_atual = lista->inicio;
 
-            for (int i = 0;no_atual->proximo != NULL && i < lista->quantidade; i++){
+            for (int i = 0; i < tamanho - j - 1; i++){
 
                 Node* no_proximo = no_atual->proximo; 
 
-                if (no_proximo != NULL){
+                if (no_atual->valor < no_proximo->valor){
+                    int aux = no_atual->valor;
+                    no_atual->valor =  no_proximo->valor;
+                    no_proximo->valor = aux;
+                }
 
-                    if (no_atual->valor < no_proximo->valor){
-                        int aux = no_atual->valor;
-                        no_atual->valor =  no_proximo->valor;
-                        no_proximo->valor = aux;
-                    }
-
-                    no_atual = no_proximo;
-                } 
+                no_atual = no_proximo;
+                
             }
 
-            contador++;
         }
 
     }
@@ -144,6 +135,7 @@ int main(){
 
         ordenar(lista);
         retornaEstados(lista, k, cuboPreferido);
+        freeLista(lista);
     }
 
     return 0;
