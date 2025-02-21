@@ -48,11 +48,10 @@ Lista* create_lista(){
 }
 
 void print_pretendente(Pretendente* pt){
-	printf("%s, %s, %d, %d\n", pt->nome, pt->sobrenome, pt->altura, pt->peso);
+	printf("%s, %s\n", pt->sobrenome, pt->nome);
 }
 
 void print_list(Lista* list){
-	printf("List:\n");
 	No* aux = list->inicio;
 	Pretendente* pt = NULL;
 
@@ -63,20 +62,55 @@ void print_list(Lista* list){
     }
 }
 
+int ordenar(Pretendente* pt1, Pretendente* pt2){
 
-void bubble_sort(Lista* lt, int (*sort_key)(Pretendente* pt1, Pretendente* pt2) ){
+    if (abs(pt1->altura - 180) == abs(pt2->altura - 180)){
+
+        if (pt1->peso == pt2->peso){
+
+            if (strcmp(pt1->sobrenome, pt2->sobrenome) == 0){
+
+                return strcmp(pt1->nome, pt2->nome);
+
+            };	
+
+            return strcmp(pt1->sobrenome, pt2->sobrenome);	
+        }
+
+        else if (pt1->peso > 75 && pt2->peso > 75){
+
+            return pt1->peso > pt2->peso;
+        }
+
+        else if (pt1->peso <= 75 && pt2->peso > 75){
+
+            return 0;
+        }
+
+        else if (pt1->peso > 75 && pt2->peso <= 75){
+
+            return 1;
+        }
+
+        return abs(pt1->peso-75) > abs(pt2->peso-75);
+    }
+
+    return abs(pt1->altura - 180) > abs(pt2->altura - 180);
+}
+
+
+void bubble_sort(Lista* lt){
+
 	No* p_aux = NULL;
 	Pretendente* p_st = NULL;
 	int result;
-
-	// if(is_empty(lt))
-	// 	return;
 
 	for(int i = 0; i < lt->tamanho-1; i++){
 		p_aux = lt->inicio;
 
 		for(int j = 0; j < lt->tamanho-1-i; j++){
-			result = sort_key(p_aux->pretendente, p_aux->proximo->pretendente);
+
+			result = ordenar(p_aux->pretendente, p_aux->proximo->pretendente);
 
 			if(result > 0){
 				p_st = p_aux->pretendente; 
@@ -91,22 +125,6 @@ void bubble_sort(Lista* lt, int (*sort_key)(Pretendente* pt1, Pretendente* pt2) 
 
 }
 
-int nome_key(Pretendente* pt1, Pretendente* pt2){
-	return strcmp(pt1->nome, pt2->nome);	
-}
-
-int sobrenome_key(Pretendente* pt1, Pretendente* pt2){
-	return strcmp(pt1->sobrenome, pt2->sobrenome);	
-}
-
-int altura_key(Pretendente* pt1, Pretendente* pt2){
-
-	return abs(pt1->altura - 180) < abs(pt2->altura - 180);
-}
-
-int peso_key(Pretendente* pt1, Pretendente* pt2){
-	return abs(pt1->peso - 75) < abs(pt2->peso - 75);
-}
 
 void adicionar(Lista* lista, Pretendente* pretendente){
     No* no = create_no(pretendente);
@@ -135,12 +153,10 @@ int main(){
         adicionar(lista, pretendente);
     }
 
-    bubble_sort(lista, altura_key);
-    bubble_sort(lista, peso_key);
-    bubble_sort(lista, sobrenome_key);
-    bubble_sort(lista, nome_key);
+    bubble_sort(lista);
 
     print_list(lista);
 
     return 0;
+
 }
