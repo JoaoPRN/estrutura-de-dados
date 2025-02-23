@@ -1,15 +1,15 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include <string.h>
+#include<string.h>
 
-typedef struct Aluno {
+typedef struct Estudante {
 	char nome[101];
     char sobrenome[101];
-	char mencao[3];
-} Aluno;
+	char nota[3];
+} Estudante;
 
 typedef struct No{
-    Aluno* aluno;
+    Estudante* estudante;
     struct No* proximo;
 } No;
 
@@ -18,25 +18,25 @@ typedef struct Lista{
 	int tamanho;
 } Lista;
 
-Aluno* create_aluno(const char* nome, const char* sobrenome, const char* mencao){
+Estudante* cria_estudante(const char* nome, const char* sobrenome, const char* nota){
 
-    Aluno* aluno = (Aluno*) malloc(sizeof(Aluno));
+    Estudante* estudante = (Estudante*) malloc(sizeof(Estudante));
 
-    strcpy(aluno->nome, nome);
-    strcpy(aluno->sobrenome, sobrenome);
-    strcpy(aluno->mencao, mencao);
+    strcpy(estudante->nome, nome);
+    strcpy(estudante->sobrenome, sobrenome);
+    strcpy(estudante->nota, nota);
 
-    return aluno;
+    return estudante;
 }
 
-No* create_no(Aluno* aluno){
+No* cria_no(Estudante* estudante){
     No* no = (No*) malloc(sizeof(No));
-    no->aluno = aluno;
+    no->estudante = estudante;
     no->proximo = NULL;
     return no;
 }
 
-Lista* create_lista(){
+Lista* cria_lista(){
 
     Lista* lista = (Lista*) malloc(sizeof(Lista));
 
@@ -45,24 +45,32 @@ Lista* create_lista(){
     return lista;
 }
 
-void print_aluno(Aluno* pt){
-	printf("%s %s %s\n", pt->mencao, pt->nome, pt->sobrenome);
+void imprime_estudante(Estudante* pt){
+	printf("%s %s %s\n", pt->nota, pt->nome, pt->sobrenome);
 }
 
-void print_list(Lista* list){
+void imprime_lista(Lista* list){
 	No* aux = list->inicio;
-	Aluno* pt = NULL;
+	Estudante* pt = NULL;
 
 	while(aux != NULL){
-		pt = aux->aluno;
-		print_aluno(pt);
+		pt = aux->estudante;
+		imprime_estudante(pt);
 		aux = aux->proximo;
     }
 }
 
-int ordenar(Aluno* pt1, Aluno* pt2){
+void add(Lista* lista, Estudante* estudante){
+    No* no = cria_no(estudante);
 
-    if (strcmp(pt1->mencao, pt2->mencao) == 0){
+    no->proximo = lista->inicio;
+    lista->inicio = no;
+    lista->tamanho++;
+}
+
+int ordenar(Estudante* pt1, Estudante* pt2){
+
+    if (strcmp(pt1->nota, pt2->nota) == 0){
 
         if (strcmp(pt1->nome, pt2->nome) == 0){
 
@@ -72,13 +80,21 @@ int ordenar(Aluno* pt1, Aluno* pt2){
         return strcmp(pt1->nome, pt2->nome);
     }
 
-    else if ((strcmp(pt1->mencao,"SS") == 0)
-    || (strcmp(pt1->mencao,"MS") == 0 && strcmp(pt2->mencao, "SS") != 0)
-    || (strcmp(pt1->mencao,"MM") == 0 && strcmp(pt2->mencao, "SS") != 0 && strcmp(pt2->mencao, "MS") != 0)
-    || (strcmp(pt1->mencao,"MI") == 0 && strcmp(pt2->mencao, "SS") != 0 && strcmp(pt2->mencao, "MS") != 0 && strcmp(pt2->mencao, "MM") != 0)
-    || (strcmp(pt1->mencao,"II") == 0 && strcmp(pt2->mencao, "SS") != 0 && strcmp(pt2->mencao, "MS") != 0 && strcmp(pt2->mencao, "MM") != 0 && strcmp(pt2->mencao, "MI") != 0)
-    ){
-
+    if (strcmp(pt1->nota, "SS") == 0) {
+        return 0;
+    } 
+    else if (strcmp(pt1->nota, "MS") == 0 && strcmp(pt2->nota, "SS") != 0) {
+        return 0;
+    } 
+    else if (strcmp(pt1->nota, "MM") == 0 && strcmp(pt2->nota, "SS") != 0 && strcmp(pt2->nota, "MS") != 0) {
+        return 0;
+    } 
+    else if (strcmp(pt1->nota, "MI") == 0 && strcmp(pt2->nota, "SS") != 0 && strcmp(pt2->nota, "MS") != 0 
+    && strcmp(pt2->nota, "MM") != 0) {
+        return 0;
+    } 
+    else if (strcmp(pt1->nota, "II") == 0 && strcmp(pt2->nota, "SS") != 0 && strcmp(pt2->nota, "MS") != 0 
+    && strcmp(pt2->nota, "MM") != 0 && strcmp(pt2->nota, "MI") != 0) {
         return 0;
     }
 
@@ -89,7 +105,7 @@ int ordenar(Aluno* pt1, Aluno* pt2){
 void bubble_sort(Lista* lt){
 
 	No* p_aux = NULL;
-	Aluno* p_st = NULL;
+	Estudante* p_st = NULL;
 	int result;
 
 	for(int i = 0; i < lt->tamanho-1; i++){
@@ -97,12 +113,12 @@ void bubble_sort(Lista* lt){
 
 		for(int j = 0; j < lt->tamanho-1-i; j++){
 
-			result = ordenar(p_aux->aluno, p_aux->proximo->aluno);
+			result = ordenar(p_aux->estudante, p_aux->proximo->estudante);
 
 			if(result > 0){
-				p_st = p_aux->aluno; 
-				p_aux->aluno = p_aux->proximo->aluno;
-				p_aux->proximo->aluno = p_st;
+				p_st = p_aux->estudante; 
+				p_aux->estudante = p_aux->proximo->estudante;
+				p_aux->proximo->estudante = p_st;
 			}
 
 			p_aux = p_aux->proximo;
@@ -113,35 +129,27 @@ void bubble_sort(Lista* lt){
 }
 
 
-void adicionar(Lista* lista, Aluno* aluno){
-    No* no = create_no(aluno);
-
-    no->proximo = lista->inicio;
-    lista->inicio = no;
-    lista->tamanho++;
-}
-
 int main(){
 
     int n;
     
     scanf("%d", &n);
 
-    Lista* lista = create_lista();
+    Lista* lista = cria_lista();
 
     for(int i = 0; i < n; i++){
 
-        char nome[101], sobrenome[101], mencao[3];
+        char nome[101], sobrenome[101], nota[3];
     
-        scanf("%s %s %s", mencao, nome, sobrenome);
+        scanf("%s %s %s", nota, nome, sobrenome);
     
-        Aluno* aluno =  create_aluno(nome, sobrenome, mencao);
-        adicionar(lista, aluno);
+        Estudante* estudante =  cria_estudante(nome, sobrenome, nota);
+        add(lista, estudante);
     }
 
     bubble_sort(lista);
 
-    print_list(lista);
+    imprime_lista(lista);
 
     return 0;
 
